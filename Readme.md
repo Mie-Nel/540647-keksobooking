@@ -1,7 +1,7 @@
-# Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
+﻿# Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Вика Кудымова](https://up.htmlacademy.ru/javascript/14/user/540647).
-* Наставник: `Неизвестно`.
+* Наставник: [Екатерина Кащенко](https://htmlacademy.ru/profile/id109008)
 
 ---
 
