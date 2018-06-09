@@ -22,7 +22,7 @@ var offerCheckInOut = ['12:00', '13:00', '14:00'];
 
 var offerFeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
-var offerDescription = '';
+// var offerDescription = '';
 
 var offerPhotos = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -35,7 +35,7 @@ var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 };
 
-//функция получения рандомного элемента из массива
+// функция получения рандомного элемента из массива
 var getRandomData = function (arr) {
   return Math.floor(Math.random() * arr.length);
 };
@@ -74,17 +74,15 @@ var createPin = function () {
   pinElement.querySelectorAll('popup__feature').textContent = randomFeatures;
 
   for (var i = 0; i < offerPhotos.length; i++) {
-    console.log(offerPhotos[i]);
+    // console.log(offerPhotos[i]);
     pinElement.querySelector('.popup__photo').src = offerPhotos[i];
-  };
+  }
 
   return pinElement;
-}
+};
 
- console.log(createPin());
-
- var fragment = document.createDocumentFragment();
- for (var i = 0; i < 8; i++) {
+var fragment = document.createDocumentFragment();
+for (var i = 0; i < 8; i++) {
   fragment.appendChild(createPin());
- }
- pinList.appendChild(fragment);
+}
+pinList.appendChild(fragment);
