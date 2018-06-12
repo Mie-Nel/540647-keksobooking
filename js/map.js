@@ -1,88 +1,165 @@
 'use strict';
 
-var offerTitle = [
-  'Большая уютная квартира',
-  'Маленькая неуютная квартира',
-  'Огромный прекрасный дворец',
-  'Маленький ужасный дворец',
-  'Красивый гостевой домик',
-  'Некрасивый негостеприимный домик',
-  'Уютное бунгало далеко от моря',
-  'Неуютное бунгало по колено в воде'
-];
+var MIN_X = 300;
+var MAX_X = 900;
+var MIN_Y = 130;
+var MAX_Y = 630;
+var MIN_PRICE = 1000;
+var MAX_PRICE = 1000000;
+var HOUSE_TYPE = ['palace', 'flat', 'house', 'bungalo'];
+var MIN_ROOMS = 1;
+var MAX_ROOMS = 5;
+var MIN_GUESTS = 1;
+var MAX_GUESTS = 5;
+var CHECKIN_TIME = ['12:00', '13:00', '14:00'];
+var CHECKOUT_TIME = ['12:00', '13:00', '14:00'];
+var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
-var offerType = [
-  'Дворец',
-  'Квартира',
-  'Дом',
-  'Бунгало'
-];
+var ADVERTS_COUNT = 8;
+var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
-var offerCheckInOut = ['12:00', '13:00', '14:00'];
-
-var offerFeatures = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-
-// var offerDescription = '';
-
-var offerPhotos = [
-  'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
-  'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
-  'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
-];
-
-// функция случайного числа
-var getRandomNumber = function (min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
-};
-
-// функция получения рандомного элемента из массива
-var getRandomData = function (arr) {
-  return Math.floor(Math.random() * arr.length);
-};
 
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
-// находим шаблон
-var pinTemplate = document.querySelector('template').content.querySelector('.map__card');
+function getUserAvatar(index) {
+  var indexAvatar = index + 1;
+  return 'img/avatars/user0' + indexAvatar + '.png';
+}
 
-// находим блок, куда вставлять сгенерированные объекты
-var pinList = document.querySelector('.map');
+function getRandomValue(min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
 
-// функция генерации объекта
-var createPin = function () {
-  var pinElement = pinTemplate.cloneNode(true);
+function getRandomValueFromArray(arr) {
+  var randomIndex = getRandomValue(0, arr.length - 1);
+  return arr[randomIndex];
+}
 
-  pinElement.querySelector('.popup__avatar').src = 'img/avatars/user' + 0 + getRandomNumber(1, 8) + '.png';
+function getHouseTitle(index) {
+  var houseTitles = [
+    'Большая уютная квартира',
+    'Маленькая неуютная квартира',
+    'Огромный прекрасный дворец',
+    'Маленький ужасный дворец',
+    'Красивый гостевой домик',
+    'Некрасивый негостеприимный домик',
+    'Уютное бунгало далеко от моря',
+    'Неуютное бунгало по колено в воде'];
+  return houseTitles[index];
+}
 
-  pinElement.querySelector('.popup__title')
-    .textContent = offerTitle[getRandomData(offerTitle)];
-
-  pinElement.querySelector('.popup__text--price')
-    .textContent = getRandomNumber(1000, 1000000) + '₽/ночь';
-
-  pinElement.querySelector('.popup__type')
-    .textContent = offerType[getRandomData(offerType)];
-
-  pinElement.querySelector('.popup__text--capacity')
-  .textContent = getRandomNumber(1, 5) + ' комнаты для ' + getRandomNumber(1, 5) + ' гостей';
-
-  pinElement.querySelector('.popup__text--time')
-    .textContent = 'Заезд после ' + offerCheckInOut[getRandomData(offerCheckInOut)] + ', ' + 'выезд до ' + offerCheckInOut[getRandomData(offerCheckInOut)];
-
-  var randomFeatures = offerFeatures.slice(getRandomNumber(0, offerFeatures.length));
-  pinElement.querySelectorAll('popup__feature').textContent = randomFeatures;
-
-  for (var i = 0; i < offerPhotos.length; i++) {
-    // console.log(offerPhotos[i]);
-    pinElement.querySelector('.popup__photo').src = offerPhotos[i];
+function getRandomFeatures(featuresArr) {
+  var features = [];
+  var featuresCount = Math.floor(Math.random() * (features.length + 1));
+  for (var i = 0; i < featuresCount; i++) {
+    features.push(featuresArr[i]);
   }
+  return features;
+}
 
-  return pinElement;
+var getShuffledPhotos = function (a) {
+  var j;
+  var x;
+  var i;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    x = a[i];
+    a[i] = a[j];
+    a[j] = x;
+  }
+  return a;
 };
 
-var fragment = document.createDocumentFragment();
-for (var i = 0; i < 8; i++) {
-  fragment.appendChild(createPin());
+function createPopUpData(advertCount) {
+  var adverts = [];
+  var advert = {};
+
+  var locationX = '';
+  var locationY = '';
+
+  for (var i = 0; i < advertCount; i++) {
+    locationX = getRandomValue(MIN_X, MAX_X);
+    locationY = getRandomValue(MIN_Y, MAX_Y);
+
+    advert = {
+      'author': {
+        'avatar': getUserAvatar(i)
+      },
+
+      'offer': {
+        'title': getHouseTitle(i),
+        'address': locationX + ', ' + locationY,
+        'price': getRandomValue(MIN_PRICE, MAX_PRICE),
+        'type': getRandomValueFromArray(HOUSE_TYPE),
+        'rooms': getRandomValue(MIN_ROOMS, MAX_ROOMS),
+        'guests': getRandomValue(MIN_GUESTS, MAX_GUESTS),
+        'checkin': getRandomValueFromArray(CHECKIN_TIME),
+        'checkout': getRandomValueFromArray(CHECKOUT_TIME),
+        'features': getRandomFeatures(FEATURES),
+        'description': '',
+        'photos': getShuffledPhotos(PHOTOS)
+      },
+
+      'location': {
+        'x': locationX,
+        'y': locationY
+      }
+    };
+    adverts.push(advert);
+  }
+  return adverts;
 }
-pinList.appendChild(fragment);
+
+var adverts = createPopUpData(ADVERTS_COUNT);
+
+function renderPins() {
+  // var template = document.querySelector('.map__pins');
+  var similarElement = document.querySelector('template').content.querySelector('.map__pin');
+  var fragment = document.createDocumentFragment();
+
+  adverts.forEach(function (item) {
+    var element = similarElement.cloneNode(true);
+    element.querySelector('img').src = item.author.avatar;
+    element.querySelector('img').style = 'left: ' + item.locationX + 'px; ' + 'top: ' + item.locationY + 'px';
+    fragment.appendChild(element);
+    // template.appendChild.fragment;
+  });
+}
+
+renderPins(adverts);
+
+// var renderFeatures = function (features) {
+//   var fragment = document.createDocumentFragment();
+//   for (var i = 0; i < features.length; i++) {
+//     var newElement = document.createElement('li');
+//     newElement.className = 'feature feature--' + features[i];
+//     fragment.appendChild(newElement);
+//   }
+//   return fragment;
+// }
+
+// var renderPictures = function (photos) {
+//    var fragment = document.createDocumentFragment();
+//    for (var i = 0; i < photos.length; i++) {
+//     var similarElement = document.querySelector('template').content.querySelector('.popup__photos img').cloneNode(true);
+//    }
+// }
+
+// function renderPopUp(item) {
+//   var similarCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
+//   var cardElement = similarCardTemplate.cloneNode(true);
+
+//   cardElement.querySelector('img').src = item.author.avatar;
+//   cardElement.querySelector('h3').textContent = item.offer.title;
+//   cardElement.querySelector('.popup__text--address').textContent = item.offer.address;
+//   cardElement.querySelector('.popup__text--price').textContent = item.offer.price;
+//   cardElement.querySelector('.popup__type').textContent = item.offer.type;
+//   cardElement.querySelector('.popup__text--capacity').textContent = item.offer.rooms + item.offer.guests;
+//   cardElement.querySelector('.popup__text--time').textContent = item.offer.checkin + item.offer.checkout;
+//   cardElement.querySelector('.popup__features').textContent = '';
+//   cardElement.querySelector('.popup__features').appendChild(renderFeatures(item.offer.features));
+//   cardElement.querySelector('.popup__description').textContent = item.offer.description;
+//   cardElement.querySelector('.popup__photos').appendChild(renderPictures(item.offer.photos));
+//   return cardElement;
+// }
