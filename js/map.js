@@ -19,9 +19,6 @@ var ADVERTS_COUNT = 8;
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
 
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-
 function getUserAvatar(index) {
   var indexAvatar = index + 1;
   return 'img/avatars/user0' + indexAvatar + '.png';
@@ -127,7 +124,7 @@ function renderPins() {
     template.appendChild(fragment);
   });
 }
-renderPins(adverts);
+// renderPins(adverts);
 
 var renderFeatures = function (features) {
   var fragment = document.createDocumentFragment();
@@ -169,6 +166,47 @@ function renderPopUp(item) {
   return cardElement;
 }
 
+var map = document.querySelector('.map');
+
 var cardFragment = document.createDocumentFragment();
 cardFragment.appendChild(renderPopUp(adverts[0]));
-map.insertBefore(cardFragment, document.querySelector('.map__filters-container'));
+// map.insertBefore(cardFragment, document.querySelector('.map__filters-container'));
+
+
+var fieldsets = document.querySelectorAll('fieldset');
+
+for (var i = 0; i < fieldsets.length; i++) {
+  fieldsets[i].setAttribute('disabled', 'disabled');
+}
+
+var pinMain = document.querySelector('.map__pin--main');
+var form = document.querySelector('.ad-form');
+var addressInput = form.querySelector('#address');
+
+function pinMainMouseup() {
+  map.classList.remove('map--faded');
+  form.classList.remove('ad-form--disabled');
+  for (var j = 0; j < fieldsets.length; j++) {
+    fieldsets[j].removeAttribute('disabled');
+  }
+}
+
+var PIN_WIDTH = 65;
+var PIN_HEIGHT = 65;
+
+function locationPinMouseup() {
+  addressInput.focus();
+  addressInput.value = PIN_WIDTH / 2 + PIN_HEIGHT; // как найти координату метки?
+}
+
+function renderPinsMouseup() {
+  renderPins(adverts);
+}
+
+pinMain.addEventListener('mouseup', function () {
+  pinMainMouseup();
+  locationPinMouseup();
+  renderPinsMouseup();
+});
+
+// var Pins = document.querySelectorAll('.map__pin');
