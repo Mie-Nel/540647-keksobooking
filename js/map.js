@@ -209,4 +209,23 @@ pinMain.addEventListener('mouseup', function () {
   renderPinsMouseup();
 });
 
-// var Pins = document.querySelectorAll('.map__pin');
+var mapPins = document.querySelector('.map__pins');
+
+function showPin(pin) {
+  var target = pin.target;
+
+  while (target !== mapPins) {
+    if (target.tagName === 'BUTTON') {
+      // console.log(target);
+      // var pins = mapPins.querySelectorAll('.map__pin');
+      // for (var i = 0; i < pins.length; i++) {
+      //   pins[i].setAttribute('data-adverts', i);
+      // }
+      break;
+    } else {
+      target = target.parentNode;
+    }
+  }
+}
+
+mapPins.addEventListener('click', showPin);
