@@ -111,20 +111,21 @@ function createPopUpData(advertCount) {
 
 var adverts = createPopUpData(ADVERTS_COUNT);
 
-function renderPins() {
+function renderPins(advertsArr) {
   var template = document.querySelector('.map__pins');
   var similarElement = document.querySelector('template').content.querySelector('.map__pin');
   var fragment = document.createDocumentFragment();
 
-  adverts.forEach(function (item) {
+  advertsArr.forEach(function (item, index) {
     var element = similarElement.cloneNode(true);
     element.querySelector('img').setAttribute('src', item.author.avatar);
     element.setAttribute('style', 'left: ' + item.location.x + 'px; ' + 'top: ' + item.location.y + 'px');
+    element.setAttribute('data-ad-number', index);
     fragment.appendChild(element);
     template.appendChild(fragment);
   });
 }
-// renderPins(adverts);
+
 
 var renderFeatures = function (features) {
   var fragment = document.createDocumentFragment();
@@ -167,12 +168,6 @@ function renderPopUp(item) {
 }
 
 var map = document.querySelector('.map');
-
-var cardFragment = document.createDocumentFragment();
-cardFragment.appendChild(renderPopUp(adverts[0]));
-// map.insertBefore(cardFragment, document.querySelector('.map__filters-container'));
-
-
 var fieldsets = document.querySelectorAll('fieldset');
 
 for (var i = 0; i < fieldsets.length; i++) {
@@ -181,7 +176,7 @@ for (var i = 0; i < fieldsets.length; i++) {
 
 var pinMain = document.querySelector('.map__pin--main');
 var form = document.querySelector('.ad-form');
-var addressInput = form.querySelector('#address');
+// var addressInput = form.querySelector('#address');
 
 function pinMainMouseup() {
   map.classList.remove('map--faded');
@@ -191,41 +186,52 @@ function pinMainMouseup() {
   }
 }
 
-var PIN_WIDTH = 65;
-var PIN_HEIGHT = 65;
+// var PIN_WIDTH = 65;
+// var PIN_HEIGHT = 65;
 
-function locationPinMouseup() {
-  addressInput.focus();
-  addressInput.value = PIN_WIDTH / 2 + PIN_HEIGHT; // как найти координату метки?
-}
+// function locationPinMouseup() {
+//   addressInput.focus();
+//   addressInput.value = PIN_WIDTH / 2 + PIN_HEIGHT;
+// }
 
-function renderPinsMouseup() {
-  renderPins(adverts);
-}
 
 pinMain.addEventListener('mouseup', function () {
   pinMainMouseup();
-  locationPinMouseup();
-  renderPinsMouseup();
+
+  renderPins(adverts);
 });
 
 var mapPins = document.querySelector('.map__pins');
 
-function showPin(pin) {
-  var target = pin.target;
-
-  while (target !== mapPins) {
-    if (target.tagName === 'BUTTON') {
-      // console.log(target);
-      // var pins = mapPins.querySelectorAll('.map__pin');
-      // for (var i = 0; i < pins.length; i++) {
-      //   pins[i].setAttribute('data-adverts', i);
-      // }
-      break;
-    } else {
-      target = target.parentNode;
-    }
+var deleteCard = function () {
+  var card = map.querySelector('.map__card');
+  if (card !== null) {
+    map.removeChild(card);
   }
+  return card;
+};
+
+
+function showPopup(evt) {
+  var target = evt.target;
+  var parentElement = target.parentNode;
+
+  var index = parentElement.dataset.adNumber;
+
+  if (adverts[index]) {
+    deleteCard();
+    var cardFragment = document.createDocumentFragment();
+    cardFragment.appendChild(renderPopUp(adverts[index]));
+    map.insertBefore(cardFragment, document.querySelector('.map__filters-container'));
+  }
+
+  var closeCardButton = map.querySelector('.popup__close');
+
+  var closeCard = function () {
+    closeCardButton.addEventListener('click', deleteCard);
+  };
+
+  closeCard();
 }
 
-mapPins.addEventListener('click', showPin);
+mapPins.addEventListener('click', showPopup);
