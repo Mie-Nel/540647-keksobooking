@@ -19,9 +19,6 @@ var ADVERTS_COUNT = 8;
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
 
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-
 function getUserAvatar(index) {
   var indexAvatar = index + 1;
   return 'img/avatars/user0' + indexAvatar + '.png';
@@ -114,20 +111,21 @@ function createPopUpData(advertCount) {
 
 var adverts = createPopUpData(ADVERTS_COUNT);
 
-function renderPins() {
+function renderPins(advertsArr) {
   var template = document.querySelector('.map__pins');
   var similarElement = document.querySelector('template').content.querySelector('.map__pin');
   var fragment = document.createDocumentFragment();
 
-  adverts.forEach(function (item) {
+  advertsArr.forEach(function (item, index) {
     var element = similarElement.cloneNode(true);
     element.querySelector('img').setAttribute('src', item.author.avatar);
     element.setAttribute('style', 'left: ' + item.location.x + 'px; ' + 'top: ' + item.location.y + 'px');
+    element.setAttribute('data-ad-number', index);
     fragment.appendChild(element);
     template.appendChild(fragment);
   });
 }
-renderPins(adverts);
+
 
 var renderFeatures = function (features) {
   var fragment = document.createDocumentFragment();
@@ -151,6 +149,17 @@ var renderPictures = function (photos) {
   return fragment;
 };
 
+var ESC_KEYCODE = 27;
+
+var closeCard = function () {
+  var card = map.querySelector('.map__card');
+  if (card === null) {
+    return;
+  } else {
+    map.removeChild(card);
+  }
+};
+
 function renderPopUp(item) {
   var similarCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
   var cardElement = similarCardTemplate.cloneNode(true);
@@ -166,9 +175,81 @@ function renderPopUp(item) {
   cardElement.querySelector('.popup__features').appendChild(renderFeatures(item.offer.features));
   cardElement.querySelector('.popup__description').textContent = item.offer.description;
   cardElement.querySelector('.popup__photos').appendChild(renderPictures(item.offer.photos));
+
+  var closeCardButton = cardElement.querySelector('.popup__close');
+  closeCardButton.addEventListener('click', closeCard);
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      closeCard();
+    }
+  });
+
   return cardElement;
 }
 
-var cardFragment = document.createDocumentFragment();
-cardFragment.appendChild(renderPopUp(adverts[0]));
-map.insertBefore(cardFragment, document.querySelector('.map__filters-container'));
+var map = document.querySelector('.map');
+var fieldsets = document.querySelectorAll('fieldset');
+
+var disableFormElement = function () {
+  for (var i = 0; i < fieldsets.length; i++) {
+    fieldsets[i].setAttribute('disabled', 'disabled');
+  }
+};
+disableFormElement();
+
+var enableFormElement = function () {
+  for (var j = 0; j < fieldsets.length; j++) {
+    fieldsets[j].removeAttribute('disabled');
+  }
+};
+
+var pinMain = document.querySelector('.map__pin--main');
+var form = document.querySelector('.ad-form');
+// var addressInput = form.querySelector('#address');
+
+function pinMainMouseup() {
+  map.classList.remove('map--faded');
+  form.classList.remove('ad-form--disabled');
+  enableFormElement();
+}
+
+// var PIN_WIDTH = 65;
+// var PIN_HEIGHT = 65;
+
+// function locationPinMouseup() {
+//   addressInput.focus();
+//   addressInput.value = PIN_WIDTH / 2 + PIN_HEIGHT;
+// }
+
+
+pinMain.addEventListener('mouseup', function () {
+  pinMainMouseup();
+  renderPins(adverts);
+});
+
+var mapPins = document.querySelector('.map__pins');
+
+function showPopup(evt) {
+  var target = evt.target;
+  var parentElement = target.parentNode;
+
+  var index = parentElement.dataset.adNumber;
+
+  if (adverts[index]) {
+    var cardFragment = document.createDocumentFragment();
+    cardFragment.appendChild(renderPopUp(adverts[index]));
+    map.insertBefore(cardFragment, document.querySelector('.map__filters-container'));
+  }
+}
+
+function closePopup(evt) {
+  var target = evt.target;
+  var parentElement = target.parentNode;
+
+  if (parentElement) {
+    closeCard();
+  }
+}
+
+mapPins.addEventListener('click', closePopup);
+mapPins.addEventListener('click', showPopup);
