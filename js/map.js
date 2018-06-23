@@ -211,6 +211,7 @@ function pinMainMouseup() {
   map.classList.remove('map--faded');
   form.classList.remove('ad-form--disabled');
   enableFormElement();
+  setDisabledCapacity();
 }
 
 // var PIN_WIDTH = 65;
@@ -351,10 +352,13 @@ selectTimeOut.addEventListener('change', checkTimeOutIn);
 var numberOfRooms = form.elements.rooms;
 var numberOfBedrooms = form.elements.capacity;
 
-numberOfBedrooms.options[0].disabled = true;
-numberOfBedrooms.options[1].disabled = true;
-numberOfBedrooms.options[3].disabled = true;
-numberOfBedrooms.options[2].selected = true;
+
+var setDisabledCapacity = function () {
+  numberOfBedrooms.options[0].disabled = true;
+  numberOfBedrooms.options[1].disabled = true;
+  numberOfBedrooms.options[3].disabled = true;
+  numberOfBedrooms.options[2].selected = true;
+};
 
 
 var setAllOptions = function () {
