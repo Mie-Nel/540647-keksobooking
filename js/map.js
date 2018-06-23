@@ -292,6 +292,9 @@ var minPriceFlat = 1000;
 var minPriceHouse = 5000;
 var minPricePalace = 10000;
 
+inputPrice.setAttribute('placeholder', minPriceFlat);
+inputPrice.setAttribute('min', minPriceFlat);
+
 var onSelectChange = function () {
   if (selectType.value === 'bungalo') {
     inputPrice.min = minPriceBungalo;
@@ -312,13 +315,16 @@ selectType.addEventListener('change', onSelectChange);
 
 var checkTimeInOut = function () {
   switch (selectTimeIn.value) {
-    case '12:00': selectTimeOut.value = selectTimeIn.value;
+    case '12:00':
+      selectTimeOut.value = selectTimeIn.value;
       break;
 
-    case '13:00': selectTimeOut.value = selectTimeIn.value;
+    case '13:00':
+      selectTimeOut.value = selectTimeIn.value;
       break;
 
-    case '14:00': selectTimeOut.value = selectTimeIn.value;
+    case '14:00':
+      selectTimeOut.value = selectTimeIn.value;
       break;
   }
 };
@@ -326,47 +332,67 @@ selectTimeIn.addEventListener('change', checkTimeInOut);
 
 var checkTimeOutIn = function () {
   switch (selectTimeOut.value) {
-    case '12:00': selectTimeIn.value = selectTimeOut.value;
+    case '12:00':
+      selectTimeIn.value = selectTimeOut.value;
       break;
 
-    case '13:00': selectTimeIn.value = selectTimeOut.value;
+    case '13:00':
+      selectTimeIn.value = selectTimeOut.value;
       break;
 
-    case '14:00': selectTimeIn.value = selectTimeOut.value;
+    case '14:00':
+      selectTimeIn.value = selectTimeOut.value;
       break;
   }
 };
 selectTimeOut.addEventListener('change', checkTimeOutIn);
 
 
-var selectRoomNumber = form.querySelector('#room_number');
-var selectCapacity = form.querySelector('#capacity');
-var options = selectCapacity.querySelectorAll('option');
+var numberOfRooms = form.elements.rooms;
+var numberOfBedrooms = form.elements.capacity;
 
-var disabledElements = function (value1, value2, value3, value4) {
-  for (var i = 0; i < options.length; i++) {
-    options[i].setAttribute('disabled', 'disabled');
-    if (selectRoomNumber.value === value1) {
-      options[2].removeAttribute('disabled', 'disabled');
-      options[2].selected = true;
+numberOfBedrooms.options[0].disabled = true;
+numberOfBedrooms.options[1].disabled = true;
+numberOfBedrooms.options[3].disabled = true;
+numberOfBedrooms.options[2].selected = true;
+
+
+var setAllOptions = function () {
+  for (var j = 0; j < numberOfBedrooms.options.length; j++) {
+    if (numberOfBedrooms.options[j].hasAttribute('disabled', 'disabled')) {
+      numberOfBedrooms.options[j].removeAttribute('disabled', false);
     }
-    if (selectRoomNumber.value === value2) {
-      options[1].removeAttribute('disabled', 'disabled');
-      options[2].removeAttribute('disabled', 'disabled');
-      options[1].selected = true;
-    }
-    if (selectRoomNumber.value === value3) {
-      options[0].removeAttribute('disabled', 'disabled');
-      options[1].removeAttribute('disabled', 'disabled');
-      options[2].removeAttribute('disabled', 'disabled');
-      options[0].selected = true;
-    }
-    if (selectRoomNumber.value === value4) {
-      options[3].removeAttribute('disabled', 'disabled');
-      options[3].selected = true;
+    if (numberOfBedrooms.options[j].hasAttribute('selected', true)) {
+      numberOfBedrooms.options[j].removeAttribute('selected');
     }
   }
 };
-selectRoomNumber.addEventListener('change', function () {
-  disabledElements('1', '2', '3', '100');
+
+var disabledElements = function () {
+  setAllOptions();
+  switch (numberOfRooms.value) {
+    case '1':
+      numberOfBedrooms.options[0].disabled = true;
+      numberOfBedrooms.options[1].disabled = true;
+      numberOfBedrooms.options[3].disabled = true;
+      numberOfBedrooms.options[2].selected = true;
+      break;
+    case '2':
+      numberOfBedrooms.options[0].disabled = true;
+      numberOfBedrooms.options[3].disabled = true;
+      numberOfBedrooms.options[2].selected = true;
+      break;
+    case '3':
+      numberOfBedrooms.options[3].disabled = true;
+      numberOfBedrooms.options[2].selected = true;
+      break;
+    case '100':
+      numberOfBedrooms.options[0].disabled = true;
+      numberOfBedrooms.options[1].disabled = true;
+      numberOfBedrooms.options[2].disabled = true;
+      numberOfBedrooms.options[3].selected = true;
+  }
+};
+numberOfRooms.addEventListener('change', function () {
+  disabledElements();
 });
