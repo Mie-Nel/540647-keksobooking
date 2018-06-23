@@ -253,3 +253,120 @@ function closePopup(evt) {
 
 mapPins.addEventListener('click', closePopup);
 mapPins.addEventListener('click', showPopup);
+
+
+var inputTitle = form.querySelector('#title');
+var inputPrice = form.querySelector('#price');
+var selectType = form.querySelector('#type');
+var selectTimeIn = form.querySelector('#timein');
+var selectTimeOut = form.querySelector('#timeout');
+
+var onInputTitleInvalid = function () {
+  if (inputTitle.validity.tooShort) {
+    inputTitle.setCustomValidity('Имя должно состоять минимум из 30 символов');
+  } else if (inputTitle.validity.tooLong) {
+    inputTitle.setCustomValidity('Имя не должно превышать 100 символов');
+  } else if (inputTitle.validity.valueMissing) {
+    inputTitle.setCustomValidity('Обязательное поле');
+  } else {
+    inputTitle.setCustomValidity('');
+  }
+};
+
+inputTitle.addEventListener('invalid', onInputTitleInvalid);
+
+var onInputPriceInvalid = function () {
+  if (inputPrice.validity.rangeOverflow) {
+    inputPrice.setCustomValidity('Цена не должна превышать 1000000');
+  } else if (inputPrice.validity.valueMissing) {
+    inputPrice.setCustomValidity('Обязательное поле');
+  } else {
+    inputPrice.setCustomValidity('');
+  }
+};
+inputPrice.addEventListener('invalid', onInputPriceInvalid);
+
+
+var minPriceBungalo = 0;
+var minPriceFlat = 1000;
+var minPriceHouse = 5000;
+var minPricePalace = 10000;
+
+var onSelectChange = function () {
+  if (selectType.value === 'bungalo') {
+    inputPrice.min = minPriceBungalo;
+    inputPrice.placeholder = minPriceBungalo;
+  } else if (selectType.value === 'flat') {
+    inputPrice.min = minPriceFlat;
+    inputPrice.placeholder = minPriceFlat;
+  } else if (selectType.value === 'house') {
+    inputPrice.min = minPriceHouse;
+    inputPrice.placeholder = minPriceHouse;
+  } else if (selectType.value === 'palace') {
+    inputPrice.min = minPricePalace;
+    inputPrice.placeholder = minPricePalace;
+  }
+};
+selectType.addEventListener('change', onSelectChange);
+
+
+var checkTimeInOut = function () {
+  switch (selectTimeIn.value) {
+    case '12:00': selectTimeOut.value = selectTimeIn.value;
+      break;
+
+    case '13:00': selectTimeOut.value = selectTimeIn.value;
+      break;
+
+    case '14:00': selectTimeOut.value = selectTimeIn.value;
+      break;
+  }
+};
+selectTimeIn.addEventListener('change', checkTimeInOut);
+
+var checkTimeOutIn = function () {
+  switch (selectTimeOut.value) {
+    case '12:00': selectTimeIn.value = selectTimeOut.value;
+      break;
+
+    case '13:00': selectTimeIn.value = selectTimeOut.value;
+      break;
+
+    case '14:00': selectTimeIn.value = selectTimeOut.value;
+      break;
+  }
+};
+selectTimeOut.addEventListener('change', checkTimeOutIn);
+
+
+var selectRoomNumber = form.querySelector('#room_number');
+var selectCapacity = form.querySelector('#capacity');
+var options = selectCapacity.querySelectorAll('option');
+
+var disabledElements = function (value1, value2, value3, value4) {
+  for (var i = 0; i < options.length; i++) {
+    options[i].setAttribute('disabled', 'disabled');
+    if (selectRoomNumber.value === value1) {
+      options[2].removeAttribute('disabled', 'disabled');
+      options[2].selected = true;
+    }
+    if (selectRoomNumber.value === value2) {
+      options[1].removeAttribute('disabled', 'disabled');
+      options[2].removeAttribute('disabled', 'disabled');
+      options[1].selected = true;
+    }
+    if (selectRoomNumber.value === value3) {
+      options[0].removeAttribute('disabled', 'disabled');
+      options[1].removeAttribute('disabled', 'disabled');
+      options[2].removeAttribute('disabled', 'disabled');
+      options[0].selected = true;
+    }
+    if (selectRoomNumber.value === value4) {
+      options[3].removeAttribute('disabled', 'disabled');
+      options[3].selected = true;
+    }
+  }
+};
+selectRoomNumber.addEventListener('change', function () {
+  disabledElements('1', '2', '3', '100');
+});
