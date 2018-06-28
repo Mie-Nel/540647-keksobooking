@@ -25,15 +25,6 @@
     return 'img/avatars/user0' + indexAvatar + '.png';
   }
 
-  function getRandomValue(min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
-  }
-
-  function getRandomValueFromArray(arr) {
-    var randomIndex = getRandomValue(0, arr.length - 1);
-    return arr[randomIndex];
-  }
-
   function getHouseTitle(index) {
     var houseTitles = [
       'Большая уютная квартира',
@@ -56,19 +47,6 @@
     return features;
   }
 
-  var getShuffledPhotos = function (a) {
-    var j;
-    var x;
-    var i;
-    for (i = a.length - 1; i > 0; i--) {
-      j = Math.floor(Math.random() * (i + 1));
-      x = a[i];
-      a[i] = a[j];
-      a[j] = x;
-    }
-    return a;
-  };
-
   function createPopUpData(advertCount) {
     var adverts = [];
     var advert = {};
@@ -77,8 +55,8 @@
     var locationY = '';
 
     for (var i = 0; i < advertCount; i++) {
-      locationX = getRandomValue(MIN_X, MAX_X);
-      locationY = getRandomValue(MIN_Y, MAX_Y);
+      locationX = window.utils.getRandomValue(MIN_X, MAX_X);
+      locationY = window.utils.getRandomValue(MIN_Y, MAX_Y);
 
       advert = {
         'author': {
@@ -88,15 +66,15 @@
         'offer': {
           'title': getHouseTitle(i),
           'address': locationX + ', ' + locationY,
-          'price': getRandomValue(MIN_PRICE, MAX_PRICE),
-          'type': getRandomValueFromArray(HOUSE_TYPE),
-          'rooms': getRandomValue(MIN_ROOMS, MAX_ROOMS),
-          'guests': getRandomValue(MIN_GUESTS, MAX_GUESTS),
-          'checkin': getRandomValueFromArray(CHECKIN_TIME),
-          'checkout': getRandomValueFromArray(CHECKOUT_TIME),
+          'price': window.utils.getRandomValue(MIN_PRICE, MAX_PRICE),
+          'type': window.utils.getRandomValueFromArray(HOUSE_TYPE),
+          'rooms': window.utils.getRandomValue(MIN_ROOMS, MAX_ROOMS),
+          'guests': window.utils.getRandomValue(MIN_GUESTS, MAX_GUESTS),
+          'checkin': window.utils.getRandomValueFromArray(CHECKIN_TIME),
+          'checkout': window.utils.getRandomValueFromArray(CHECKOUT_TIME),
           'features': getRandomFeatures(FEATURES),
           'description': '',
-          'photos': getShuffledPhotos(PHOTOS)
+          'photos': window.utils.getShuffledPhotos(PHOTOS)
         },
 
         'location': {
