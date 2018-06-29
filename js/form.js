@@ -77,40 +77,28 @@
   selectType.addEventListener('change', onSelectChange);
 
 
-  var checkTimeInOut = function () {
-    switch (selectTimeIn.value) {
+  var checkTime = function (value1, value2) {
+    switch (value1.value) {
       case '12:00':
-        selectTimeOut.value = selectTimeIn.value;
+        value2.value = value1.value;
         break;
 
       case '13:00':
-        selectTimeOut.value = selectTimeIn.value;
+        value2.value = value1.value;
         break;
 
       case '14:00':
-        selectTimeOut.value = selectTimeIn.value;
+        value2.value = value1.value;
         break;
     }
   };
-  selectTimeIn.addEventListener('change', checkTimeInOut);
 
-  var checkTimeOutIn = function () {
-    switch (selectTimeOut.value) {
-      case '12:00':
-        selectTimeIn.value = selectTimeOut.value;
-        break;
-
-      case '13:00':
-        selectTimeIn.value = selectTimeOut.value;
-        break;
-
-      case '14:00':
-        selectTimeIn.value = selectTimeOut.value;
-        break;
-    }
-  };
-  selectTimeOut.addEventListener('change', checkTimeOutIn);
-
+  selectTimeIn.addEventListener('change', function () {
+    checkTime(selectTimeIn, selectTimeOut);
+  });
+  selectTimeOut.addEventListener('change', function () {
+    checkTime(selectTimeOut, selectTimeIn);
+  });
 
   var numberOfRooms = form.elements.rooms;
   var numberOfBedrooms = form.elements.capacity;

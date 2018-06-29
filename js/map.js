@@ -20,12 +20,12 @@
   var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
 
-  function getUserAvatar(index) {
+  var getUserAvatar = function (index) {
     var indexAvatar = index + 1;
     return 'img/avatars/user0' + indexAvatar + '.png';
-  }
+  };
 
-  function getHouseTitle(index) {
+  var getHouseTitle = function (index) {
     var houseTitles = [
       'Большая уютная квартира',
       'Маленькая неуютная квартира',
@@ -36,18 +36,18 @@
       'Уютное бунгало далеко от моря',
       'Неуютное бунгало по колено в воде'];
     return houseTitles[index];
-  }
+  };
 
-  function getRandomFeatures(featuresArr) {
+  var getRandomFeatures = function (featuresArr) {
     var features = [];
     var featuresCount = Math.floor(Math.random() * (featuresArr.length + 1));
     for (var i = 0; i < featuresCount; i++) {
       features.push(featuresArr[i]);
     }
     return features;
-  }
+  };
 
-  function createPopUpData(advertCount) {
+  var createPopUpData = function (advertCount) {
     var adverts = [];
     var advert = {};
 
@@ -86,11 +86,11 @@
     }
     return adverts;
 
-  }
+  };
 
   var adverts = createPopUpData(ADVERTS_COUNT);
 
-  function renderPins(advertsArr) {
+  var renderPins = function (advertsArr) {
     var template = document.querySelector('.map__pins');
     var similarElement = document.querySelector('template').content.querySelector('.map__pin');
     var fragment = document.createDocumentFragment();
@@ -103,7 +103,7 @@
       fragment.appendChild(element);
       template.appendChild(fragment);
     });
-  }
+  };
 
   var renderFeatures = function (features) {
     var fragment = document.createDocumentFragment();
@@ -138,7 +138,7 @@
     }
   };
 
-  function renderPopUp(item) {
+  var renderPopUp = function (item) {
     var similarCardTemplate = document.querySelector('template').content.querySelector('article.map__card');
     var cardElement = similarCardTemplate.cloneNode(true);
 
@@ -163,10 +163,10 @@
     });
 
     return cardElement;
-  }
+  };
 
   var map = document.querySelector('.map');
-  function showPopup(evt) {
+  var showPopup = function (evt) {
     var target = evt.target;
     var parentElement = target.parentNode;
 
@@ -177,16 +177,16 @@
       cardFragment.appendChild(renderPopUp(adverts[index]));
       map.insertBefore(cardFragment, document.querySelector('.map__filters-container'));
     }
-  }
+  };
 
-  function closePopup(evt) {
+  var closePopup = function (evt) {
     var target = evt.target;
     var parentElement = target.parentNode;
 
     if (parentElement) {
       closeCard();
     }
-  }
+  };
 
   var mapPins = document.querySelector('.map__pins');
   mapPins.addEventListener('click', closePopup);

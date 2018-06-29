@@ -1,14 +1,14 @@
 'use strict';
 
 (function () {
-  function getRandomValue(min, max) {
+  var getRandomValue = function (min, max) {
     return Math.floor(Math.random() * (max - min) + min);
-  }
+  };
 
-  function getRandomValueFromArray(arr) {
+  var getRandomValueFromArray = function (arr) {
     var randomIndex = getRandomValue(0, arr.length - 1);
     return arr[randomIndex];
-  }
+  };
 
   var getShuffledPhotos = function (a) {
     var j;

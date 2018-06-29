@@ -5,12 +5,12 @@
   var pinMain = document.querySelector('.map__pin--main');
 
 
-  function pinMainMouseup() {
+  var pinMainMouseup = function () {
     map.classList.remove('map--faded');
     window.formElements.enableFormElement();
     window.formElements.setDisabledCapacity();
     window.pins.renderPins(window.pins.adverts);
-  }
+  };
 
 
   pinMain.addEventListener('mouseup', function () {
