@@ -9,6 +9,7 @@
   var selectTimeIn = form.querySelector('#timein');
   var selectTimeOut = form.querySelector('#timeout');
   var fieldsets = form.querySelectorAll('fieldset');
+  var successMessage = document.querySelector('.success');
 
   var disableFormElement = function () {
     for (var i = 0; i < fieldsets.length; i++) {
@@ -56,8 +57,12 @@
   var minPriceHouse = 5000;
   var minPricePalace = 10000;
 
-  inputPrice.setAttribute('placeholder', minPriceFlat);
-  inputPrice.setAttribute('min', minPriceFlat);
+  var inputPriceDefault = function () {
+    selectType.value = 'flat';
+    inputPrice.setAttribute('placeholder', minPriceFlat);
+    inputPrice.setAttribute('min', minPriceFlat);
+  };
+  inputPriceDefault();
 
   var onSelectChange = function () {
     if (selectType.value === 'bungalo') {
@@ -112,19 +117,19 @@
   };
 
 
-  var setAllOptions = function () {
-    for (var j = 0; j < numberOfBedrooms.options.length; j++) {
-      if (numberOfBedrooms.options[j].hasAttribute('disabled', 'disabled')) {
-        numberOfBedrooms.options[j].removeAttribute('disabled', false);
+  var setAllOptions = function (field) {
+    for (var j = 0; j < field.options.length; j++) {
+      if (field.options[j].hasAttribute('disabled', 'disabled')) {
+        field.options[j].removeAttribute('disabled', false);
       }
-      if (numberOfBedrooms.options[j].hasAttribute('selected', true)) {
-        numberOfBedrooms.options[j].removeAttribute('selected');
+      if (field.options[j].hasAttribute('selected', true)) {
+        field.options[j].removeAttribute('selected');
       }
     }
   };
 
   var disabledElements = function () {
-    setAllOptions();
+    setAllOptions(numberOfBedrooms);
     switch (numberOfRooms.value) {
       case '1':
         numberOfBedrooms.options[0].disabled = true;
@@ -150,6 +155,48 @@
   };
   numberOfRooms.addEventListener('change', function () {
     disabledElements();
+  });
+
+  var pressESC = function () {
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.pins.ESC_KEYCODE) {
+        successMessage.classList.add('hidden');
+      }
+    });
+    document.addEventListener('click', function () {
+      successMessage.classList.add('hidden');
+    });
+  };
+
+  var hidePins = function () {
+    var pins = document.querySelectorAll('.map__pin');
+    pins.forEach(function (item) {
+      if (item.hasAttribute('data-ad-number', true)) {
+        item.classList.add('hidden');
+      }
+    });
+  };
+
+  var successSubmit = function () {
+    window.map.map.classList.add('map--faded');
+    form.classList.add('ad-form--disabled');
+    successMessage.classList.remove('hidden');
+    inputTitle.value = '';
+    inputPrice.value = '1000';
+    selectTimeIn.value = '12:00';
+    selectTimeOut.value = '12:00';
+    numberOfRooms.value = '1';
+    setDisabledCapacity();
+    disableFormElement();
+    inputPriceDefault();
+    pressESC();
+    hidePins();
+    window.pins.closeCard();
+  };
+
+  form.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(form), successSubmit, window.backend.errorHandler);
+    evt.preventDefault();
   });
 
   window.formElements = {

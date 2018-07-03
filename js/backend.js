@@ -1,75 +1,59 @@
 'use strict';
 
-// (function() {
-//   var urlGet = 'https://js.dump.academy/keksobooking/data';
-//   var urlPost = 'https://js.dump.academy/keksobooking';
-//   var statusOk = 200;
-//   var timeOut = 5000;
+(function () {
+  var urlGet = 'https://js.dump.academy/keksobooking/data';
+  var urlPost = 'https://js.dump.academy/keksobooking';
+  var statusOk = 200;
+  var timeOut = 10000;
 
-//   var onLoad = function (data) {
-//     var adverts = data;
-//   };
+  var setup = function (onLoad, onError) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
 
-//   var onError = function (message) {
-//     console.error(message);
-//   };
+    xhr.addEventListener('load', function () {
+      if (xhr.status === statusOk) {
+        onLoad(xhr.response);
+      } else {
+        onError(xhr.response);
+      }
+    });
 
-//   window.load = function (onLoad, onError) {
-//     var xhr = new XMLHttpRequest();
-//     xhr.responseType = 'json';
+    xhr.addEventListener('error', function () {
+      onError('Произошла ошибка соединения');
+    });
+    xhr.addEventListener('timeout', function () {
+      onError('запрос не успел выполниться ' + xhr.timeout + 'мс');
+    });
+    xhr.timeout = timeOut;
+    return xhr;
+  };
 
-//     xhr.addEventListener('load', function () {
-//       if (xhr.status === statusOk) {
-//         onLoad(xhr.response);
-//       } else {
-//         onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
-//       }
-//     });
+  var load = function (onLoad, onError) {
+    var xhr = setup(onLoad, onError);
+    xhr.open('GET', urlGet);
+    xhr.send();
+  };
 
-//     xhr.addEventListener('error', function () {
-//       onError('Произошла ошибка соединения');
-//     });
-//     xhr.addEventListener('timeout', function () {
-//       onError('запрос не успел выполниться ' + xhr.timeout + 'мс');
-//     });
-//     xhr.timeout = timeOut;
+  var save = function (data, onLoad, onError) {
+    var xhr = setup(onLoad, onError);
+    xhr.open('POST', urlPost);
+    xhr.send(data);
+  };
 
-//     xhr.open('GET', urlGet);
-//     xhr.send();
-//   };
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 10px auto; text-align: center; background-color: green;';
+    node.style.position = 'fixed';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.font = '30px';
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
 
-//   var upload = function (data, onLoad, onError) {
-//       var xhr = new XMLHttpRequest();
-//       xhr.responseType = 'json';
-
-//     xhr.addEventListener('load', function () {
-//       if (xhr.status === statusOk) {
-//         onLoad(xhr.response);
-//       } else {
-//         onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
-//       }
-//     });
-
-//     xhr.addEventListener('error', function () {
-//       onError('Произошла ошибка соединения');
-//     });
-//     xhr.addEventListener('timeout', function () {
-//       onError('запрос не успел выполниться ' + xhr.timeout + 'мс');
-//     });
-//     xhr.timeout = timeOut;
-
-//     xhr.open('POST', urlPost);
-//     xhr.send(data);
-//   };
-
-//   var errorHandler = function (errorMessage) {
-//     var node = document.createElement('div');
-//     node.style = 'z-index: 100; margin: 10px auto; text-align: center; background-color: green;';
-//     node.style.position = 'fixed';
-//     node.style.left = 0;
-//     node.style.right = 0;
-//     node.style.font = '30px';
-//     node.textContent = errorMessage;
-//     document.body.insertAdjacentElement('afterbegin', node);
-//   };
-// })();
+  window.backend = {
+    load: load,
+    save: save,
+    errorHandler: errorHandler
+  };
+})();
