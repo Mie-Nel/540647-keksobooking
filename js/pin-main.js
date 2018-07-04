@@ -9,12 +9,12 @@
     map.classList.remove('map--faded');
     window.formElements.enableFormElement();
     window.formElements.setDisabledCapacity();
-    window.pins.renderPins(window.pins.adverts);
   };
 
 
   pinMain.addEventListener('mouseup', function () {
     pinMainMouseup();
+    window.backend.load(window.pins.successHandler, window.backend.errorHandler);
   });
 
   var PIN_WIDTH = 65;
@@ -76,4 +76,8 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  window.map = {
+    map: map
+  };
 })();
