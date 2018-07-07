@@ -15,10 +15,12 @@
     template.appendChild(fragment);
   };
 
+
   var successHandler = function (arrData) {
     arrData.forEach(renderPins, fragment);
     adverts = arrData;
   };
+
 
   var renderFeatures = function (features) {
     for (var i = 0; i < features.length; i++) {
@@ -120,8 +122,9 @@
 
   window.pins = {
     renderPins: renderPins,
+    adverts: adverts,
     ESC_KEYCODE: ESC_KEYCODE,
     successHandler: successHandler,
-    closeCard: closeCard
+    closeCard: closeCard,
   };
 })();
